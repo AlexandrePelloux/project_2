@@ -8,15 +8,17 @@ Second project of CS refresher
         - Bounding box coordinates
 - *Area*  :
     - Attributes
-        - assets: list of Elements
-        - subareas: list of Areas
-        - adjacentAreas
+        - _assets: list of Elements
+        - _subareas: list of Areas
+        - _adjacent_areas
     - Methods:
         - addElement
 -  *Building*:
     - Attributes:
         - Contained floors
-- *Coordinate*:
+    - Methods: 
+        ad_floor:
+- *PointCoordinate*:
     - Attributes:
         - x
         - y
