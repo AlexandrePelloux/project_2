@@ -1,14 +1,33 @@
 class PointCoordinates():
     """ class representing the coordinates in 2D of a point.
     """
-    def __init__(self, coord_dict) -> None:
-        """[(constructor of PointCoordinates class)]
+    def __init__(self, x,y) -> None:
+        """[summary] class of a point in 2D plane
 
         Args:
-            coord_dict ([dictionary]): [looks like : { 'x' : value of coordinate x, 'y' : value of y coordinate}]
+            x ([float or int]): [x coordinate]
+            y ([float or int]): [y coordinate]
         """
-        self.x = coord_dict['x']
-        self.y = coord_dict['y']
+
+        assert ( isinstance(x,float) or isinstance(x,int)), f"the type of 'x' coordinate is not supported, x is type {type(x)}"
+        assert ( isinstance(y,float) or isinstance(y,int)), f"the type of 'y' coordinate is not supported, x is type {type(y)}"
+        self.x = x
+        self.y = y
+
+    def is_lower(self,point_1):
+        """Returns a bool to tell if the self point is lower (in sense of paretto) than point_1.
+        Returns true if it is indeed lower else it returns false (in all other cases)
+
+        Args:
+            point_1 ([PointCoordinates]): [description]
+
+        Raises:
+            TypeError: [description]
+        Returns: 
+            BOOL
+        """
+        return(self.x <= point_1.x and self.y <= point_1.y)
+
 
 class Element():
     def __init__(self,coordinates):
@@ -19,11 +38,16 @@ class Element():
             bouding box of the element.There are two points : bottom left and top right (defining a rectangle)]
 
         """
+        assert 'coord_1' in coordinates, 'missing key coord1'
+        assert 'coord_2' in coordinates, 'missing key coord2'
+        assert isinstance(coordinates['coord_1'], PointCoordinates), 'wrong type for coord_1'
+        assert isinstance(coordinates['coord_2'], PointCoordinates), 'wrong type for coord_2'
         self.bounding_box_coordinates = coordinates
 
 
-class Area():
-    def __init__(self) -> None:
+class Area(Element):
+    def __init__(self,coordinates) -> None:
+        super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
         self._adjacent_areas = [] # list of 'connected areas
@@ -34,10 +58,14 @@ class Area():
         Args:
             element ([Element]): [element to add]
         """
+        assert isinstance(element,Element), 'the added Element is not of type Element'
         self._assets.append(element)
 
 class Building():
     def __init__(self,list_of_floors):
+        for floor in list_of_floors:
+            if not isinstance(floor,Floor):
+                raise TypeError("the list of floors contains elements that aren't of type Floor")
         self.contained_floors = list_of_floors # list of the floors in the building 
 
 
