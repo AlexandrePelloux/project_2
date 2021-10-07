@@ -5,7 +5,7 @@ Second project of CS refresher
 ## Classes:
 - *Element*:
     - Attributes:
-        - Bounding box coordinates : {p1:PointCoordinates,p2:PointCoordinates} where p1 < p2
+        - Bounding box coordinates : {coord_1:PointCoordinates,coord_2:PointCoordinates} where coord_1<coord_2
     - Methodes:
         - contains(Element): Element's bounding box is inside self's
 - *Area* inheriting from *Element* :
