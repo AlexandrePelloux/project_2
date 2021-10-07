@@ -43,31 +43,35 @@ class Building():
 
 
 class Floor(Area):
-    def __init__(self,floor_nb):
+    def __init__(self,bounding_box,floor_nb):
         """Constructor
 
         Args:
             floorNb (int): Floor number of the area
         """
-        super().__init__()
-        self.floor_nb=floor_nb
+        assert isinstance(floor_nb,int)
+        super().__init__(bounding_box)
+        self._floor_nb=floor_nb
+    
+    def get_floor_nb(self):
+        return self._floor_nb
 
 class Room(Area):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,bounding_box):
+        super().__init__(bounding_box)
 
 class Corridor(Area):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,bounding_box):
+        super().__init__(bounding_box)
 
 class Wall(Element):
-    def __init__(self,coordinates):
-        super().__init__()
+    def __init__(self,bounding_box):
+        super().__init__(bounding_box)
 
 class Door(Element):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,bounding_box):
+        super().__init__(bounding_box)
 
 class Window(Element):
-    def __init__(self):
-        super().__init__()
+    def __init__(self,bounding_box):
+        super().__init__(bounding_box)
