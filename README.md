@@ -47,3 +47,15 @@ Second project of CS refresher
     - Attributes:
         - floorUp:
         - floorDown
+
+
+## person related class
+
+- *Person* : 
+    - Attributes: 
+        - current_position
+        - current_floor
+    - Methods:
+        -Move: delta = ['x','y','z'], distance = int 
+
+ 
