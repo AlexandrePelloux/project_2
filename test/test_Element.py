@@ -1,13 +1,11 @@
 from src.classes import *
-import pytest
+from pytest import *
 
 def test_instantiation():
     coord_1 = PointCoordinates(1,2)
     coord_2 = PointCoordinates(2,3)
-    
     my_element = Element({'coord_1': coord_1,'coord_2': coord_2})
     assert isinstance(my_element,Element), "instantiation error"
-
 
 def test_coords_are_PointCoordinates():
     with pytest.raises(AssertionError):
