@@ -14,7 +14,7 @@ class PointCoordinates():
         self.x = x
         self.y = y
 
-    def is_lower(self,point_1):
+    def is_lower(self,point):
         """Returns a bool to tell if the self point is lower (in sense of paretto) than point_1.
         Returns true if it is indeed lower else it returns false (in all other cases)
 
@@ -26,7 +26,7 @@ class PointCoordinates():
         Returns: 
             BOOL
         """
-        return(self.x <= point_1.x and self.y <= point_1.y)
+        return(self.x <= point.x and self.y <= point.y)
 
 
 class Element():
@@ -42,7 +42,20 @@ class Element():
         assert 'coord_2' in coordinates, 'missing key coord2'
         assert isinstance(coordinates['coord_1'], PointCoordinates), 'wrong type for coord_1'
         assert isinstance(coordinates['coord_2'], PointCoordinates), 'wrong type for coord_2'
+        assert coordinates['coord_1'].is_lower(coordinates['coord_2']), 'coord_1 is not lower than coord_2'
         self.bounding_box_coordinates = coordinates
+    
+    def contains(self,elem):
+        """Check if self's bounding box contains elem
+
+        Args:
+            elem (Element)
+
+        Returns:
+            Bool
+        """
+        assert isinstance(elem,Element)
+        return (self.bounding_box_coordinates['coord_1'].is_lower(elem.bounding_box_coordinates['coord_1']) and elem.bounding_box_coordinates['coord_2'].is_lower(self.bounding_box_coordinates['coord_2']))
 
 
 class Area(Element):
@@ -50,16 +63,25 @@ class Area(Element):
         super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
-        self._adjacent_areas = [] # list of 'connected areas
+        # self._adjacent_areas = [] # list of 'connected areas
 
-    def addElement(self,element):
+    def add_element(self,element):
         """[summary] Add an element to the list of elements contained in the Area (assets)
 
         Args:
             element ([Element]): [element to add]
         """
-        assert isinstance(element,Element), 'the added Element is not of type Element'
+        assert self.contains(element)
         self._assets.append(element)
+
+    def add_subarea(self,area):
+        assert isinstance(area,Area)
+        #expand the bounding box
+        pass
+
+
+    
+
 
 class Building():
     def __init__(self,list_of_floors):
