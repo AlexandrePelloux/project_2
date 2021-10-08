@@ -129,7 +129,7 @@ class Window(Element):
         super().__init__(bounding_box)
 
 
-"""/!\ TODO : TESTS RELATED TO THIS CLASS"""
+"""/!\ TODO : Méthodes d'affichage des éléments"""
 
 class Person():
     def __init__(self,position,name,floor,building=None):
@@ -154,7 +154,7 @@ class Person():
 
         Args:
             axis ([type]): [description]
-            delta ([list]): [x,yz]
+            delta ([list]): [x,y,z]
 
         Raises:
             FloorDontExist: [description]
@@ -162,17 +162,22 @@ class Person():
         """
         if delta[0]: #axe x
             """need to check if the deplacement is legal"""
-            self.current_position.x=delta[0]
+            self.current_position.x+=delta[0]
         if delta[1]: #axe y
             """need to check if the deplacement is legal"""
 
-            self.current_position.y=delta[1]
+            self.current_position.y+=delta[1]
         if delta[2]: #axe z
             """we have to consider the position x,y in the new floor"""
             if self.building:
-                floor_to_go_to = self.current_floor+delta[2]
-                if floor_to_go_to in [floor.floor_nb for floor in self.building.list_of_floors]:
-                    self.current_floor=floor_to_go_to
+                floor_to_go_to = self.current_floor._floor_nb +delta[2]
+                list_of_floors = [floor for floor in self.building.contained_floors]
+                list_of_floor_nb = []
+                for floor in list_of_floors:
+                    list_of_floor_nb.append(floor._floor_nb)
+                if floor_to_go_to in list_of_floor_nb:
+                    index = list_of_floor_nb.index(floor_to_go_to)
+                    self.current_floor=list_of_floors[index]
                 else:
                     raise FloorDontExist(f'impossible to go to floor number {floor_to_go_to}, this floor does not exist in building {self.building}')
                     

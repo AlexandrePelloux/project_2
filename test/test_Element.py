@@ -1,5 +1,5 @@
 from src.classes import *
-from pytest import *
+import pytest
 
 def test_instantiation():
     coord_1 = PointCoordinates(1,2)
