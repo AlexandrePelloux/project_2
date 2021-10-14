@@ -112,22 +112,35 @@ class Room(Area):
     def __init__(self,bounding_box):
         super().__init__(bounding_box)
 
+    def draw(self):
+        pass
+
 class Corridor(Area):
     def __init__(self,bounding_box):
         super().__init__(bounding_box)
 
+    def draw(self):
+        pass
+
 class Wall(Element):
     def __init__(self,bounding_box):
         super().__init__(bounding_box)
+    
+    def draw(self):
+        pass
 
 class Door(Element):
     def __init__(self,bounding_box):
         super().__init__(bounding_box)
 
+    def draw(self):
+        pass
 class Window(Element):
     def __init__(self,bounding_box):
         super().__init__(bounding_box)
-
+        
+    def draw(self):
+        pass
 
 """/!\ TODO : Méthodes d'affichage des éléments"""
 
