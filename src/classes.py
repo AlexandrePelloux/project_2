@@ -1,18 +1,18 @@
 from src.errors import *
 
-class PointCoordinates():
+class Point():
     """ class representing the coordinates in 2D of a point.
     """
     def __init__(self, x,y) -> None:
-        """[summary] class of a point in 2D plane
+        """Class of a point in 2D plane
 
         Args:
             x ([float or int]): [x coordinate]
             y ([float or int]): [y coordinate]
         """
 
-        assert ( isinstance(x,float) or isinstance(x,int)), f"the type of 'x' coordinate is not supported, x is type {type(x)}"
-        assert ( isinstance(y,float) or isinstance(y,int)), f"the type of 'y' coordinate is not supported, x is type {type(y)}"
+        assert isinstance(x,(float,int)), f"the type of 'x' coordinate is not supported, x is type {type(x)}"
+        assert isinstance(y,(float,int)), f"the type of 'y' coordinate is not supported, x is type {type(y)}"
         self.x = x
         self.y = y
 
@@ -21,7 +21,7 @@ class PointCoordinates():
         Returns true if it is indeed lower else it returns false (in all other cases)
 
         Args:
-            point_1 ([PointCoordinates]): [description]
+            point_1 ([Point]): [description]
 
         Raises:
             TypeError: [description]
@@ -36,16 +36,16 @@ class Element():
         """[summary]
 
         Args:
-            coordinates ({coord_1 : PointCoordinates,coord_2 : PointCoordinates]): [coordinates of the 
+            coordinates ({coord_1 : Point,coord_2 : Point]): [coordinates of the 
             bouding box of the element.There are two points : bottom left and top right (defining a rectangle)]
 
         """
-        assert 'coord_1' in coordinates, 'missing key coord1'
-        assert 'coord_2' in coordinates, 'missing key coord2'
-        assert isinstance(coordinates['coord_1'], PointCoordinates), 'wrong type for coord_1'
-        assert isinstance(coordinates['coord_2'], PointCoordinates), 'wrong type for coord_2'
-        assert coordinates['coord_1'].is_lower(coordinates['coord_2']), 'coord_1 is not lower than coord_2'
-        self.bounding_box_coordinates = coordinates
+        assert 'c1' in coordinates, 'missing key coord1'
+        assert 'c2' in coordinates, 'missing key coord2'
+        assert isinstance(coordinates['c1'], Point), 'wrong type for coord_1'
+        assert isinstance(coordinates['c2'], Point), 'wrong type for coord_2'
+        assert coordinates['c1'].is_lower(coordinates['c2']), 'coord_1 is not lower than coord_2'
+        self.bounding_box = coordinates
     
     def contains(self,elem):
         """Check if self's bounding box contains elem
@@ -57,7 +57,14 @@ class Element():
             Bool
         """
         assert isinstance(elem,Element)
-        return (self.bounding_box_coordinates['coord_1'].is_lower(elem.bounding_box_coordinates['coord_1']) and elem.bounding_box_coordinates['coord_2'].is_lower(self.bounding_box_coordinates['coord_2']))
+        return (self.bounding_box['c1'].is_lower(elem.bounding_box['c1']) and elem.bounding_box['c2'].is_lower(self.bounding_box['c2']))
+
+    def expand_bounding_box(self,element):
+        assert isinstance(element,Element)
+        self.bounding_box['c1'].x=min(self.bounding_box['c1'].x,element.bounding_box['c1'].x)
+        self.bounding_box['c1'].y=min(self.bounding_box['c1'].y,element.bounding_box['c1'].y)
+        self.bounding_box['c2'].x=max(self.bounding_box['c2'].x,element.bounding_box['c2'].x)
+        self.bounding_box['c2'].y=max(self.bounding_box['c2'].y,element.bounding_box['c2'].y)
 
 
 class Area(Element):
@@ -68,29 +75,23 @@ class Area(Element):
         # self._adjacent_areas = [] # list of 'connected areas
 
     def add_element(self,element):
-        """[summary] Add an element to the list of elements contained in the Area (assets)
+        """Add an element to the list of elements contained in the Area (assets)
 
         Args:
-            element ([Element]): [element to add]
+            element (Element): element to add
         """
         assert self.contains(element)
         self._assets.append(element)
 
     def add_subarea(self,area):
         assert isinstance(area,Area)
-        #expand the bounding box
-        pass
-
-
-    
+        self.expand_bounding_box(area)
 
 
 class Building():
-    def __init__(self,list_of_floors):
-        for floor in list_of_floors:
-            if not isinstance(floor,Floor):
-                raise TypeError("the list of floors contains elements that aren't of type Floor")
-        self.contained_floors = list_of_floors # list of the floors in the building 
+    def __init__(self,floors):
+        assert all(isinstance(floor,Floor) for floor in floors)
+        self.contained_floors = floors  # list of the floors in the building 
 
 
 
@@ -109,24 +110,35 @@ class Floor(Area):
         return self._floor_nb
 
 class Room(Area):
-    def __init__(self,bounding_box):
+    def __init__(self,bounding_box,walls):
+        assert all(isinstance(wall,Wall) for wall in walls)
+        assert len(walls)==4
         super().__init__(bounding_box)
+        assert all(self.contains(wall) for wall in walls)
 
-class Corridor(Area):
-    def __init__(self,bounding_box):
-        super().__init__(bounding_box)
+# class Corridor(Area):
+#     def __init__(self,bounding_box):
+#         super().__init__(bounding_box)
 
 class Wall(Element):
-    def __init__(self,bounding_box):
-        super().__init__(bounding_box)
+    def __init__(self,coords):
+        super().__init__(coords)
+        assert (coords['c1'].x==coords['c2'].x or coords['c1'].y==coords['c2'].y), "not along an axis"
+        self._subelements=[]
+
+    def add_element(self,element):
+        assert self.contains(element)
+        self._subelements.append(element)
 
 class Door(Element):
-    def __init__(self,bounding_box):
-        super().__init__(bounding_box)
+    def __init__(self,coords):
+        assert (coords['c1'].x==coords['c2'].x or coords['c1'].y==coords['c2'].y), "not along an axis"
+        super().__init__(coords)
 
 class Window(Element):
-    def __init__(self,bounding_box):
-        super().__init__(bounding_box)
+    def __init__(self,coords):
+        assert (coords['c1'].x==coords['c2'].x or coords['c1'].y==coords['c2'].y), "not along an axis"
+        super().__init__(coords)
 
 
 """/!\ TODO : Méthodes d'affichage des éléments"""
@@ -136,10 +148,10 @@ class Person():
         """[summary]
 
         Args:
-            position ([PointCoordinates]): [initial cordinates of the person]
+            position ([Point]): [initial cordinates of the person]
             name ([str]): [name of the person]
         """
-        assert isinstance(position,PointCoordinates),'Position has to be of type "point_coordinates"'
+        assert isinstance(position,Point),'Position has to be of type "point_coordinates"'
         assert isinstance(floor,Floor),'floor has to be of type "Floor"'
         assert type(name)==str , 'please use a string for the name'
         assert (isinstance(building,Building) or building==None), 'building is not type Building or none'
