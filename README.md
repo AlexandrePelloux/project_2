@@ -5,7 +5,7 @@ Second project of CS refresher
 ## Classes:
 - *Element*:
     - Attributes:
-        - Bounding box coordinates : {coord_1:PointCoordinates,coord_2:PointCoordinates} where coord_1<coord_2
+        - Bounding box coordinates : {c1:Point,c2:Point} where c1<c2
     - Methodes:
         - contains(Element): Element's bounding box is inside self's
 - *Area* inheriting from *Element* :
@@ -20,7 +20,7 @@ Second project of CS refresher
         - Contained floors
     - Methods: 
         add_floor:
-- *PointCoordinate*:
+- *Point*:
     - Attributes:
         - x
         - y
