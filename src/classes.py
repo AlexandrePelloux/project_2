@@ -68,6 +68,17 @@ class Element():
         self.bounding_box['c1'].y=min(self.bounding_box['c1'].y,element.bounding_box['c1'].y)
         self.bounding_box['c2'].x=max(self.bounding_box['c2'].x,element.bounding_box['c2'].x)
         self.bounding_box['c2'].y=max(self.bounding_box['c2'].y,element.bounding_box['c2'].y)
+    
+    def draw(self,screen,is_area=False):
+        COLOR = {(0,156,65),(45,178,200),(158,20,46)}
+        my_color= COLOR.pop() # choose one color among a set of colors
+        if is_area:
+            print('Call to Element.draw() with is_area=True')
+            print('coordinates of C4: ',self.bounding_box['c1'].x,self.bounding_box['c1'].y)
+            pygame.draw.rect(screen, my_color, [self.bounding_box['c1'].x,self.bounding_box['c1'].y,self.bounding_box['c2'].x,self.bounding_box['c2'].y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+
+        else:
+            pygame.draw.rect(screen, my_color, [self.bounding_box['c1'].x,self.bounding_box['c1'].y,self.bounding_box['c2'].x,self.bounding_box['c2'].y]) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
 
 
 class Area(Element):
@@ -83,12 +94,20 @@ class Area(Element):
         Args:
             element (Element): element to add
         """
-        assert self.contains(element)
+        #assert self.contains(element) TODO : add a person
         self._assets.append(element)
 
     def add_subarea(self,area):
         assert isinstance(area,Area)
         self.expand_bounding_box(area)
+        self._sub_areas.append(area)
+    
+    def draw(self,screen):
+        print('call to area.draw()')
+        print('coordinates of C4 before: ',self.bounding_box['c1'].x,self.bounding_box['c1'].y)
+
+        super().draw(screen,is_area=True)
+
 
 
 class Building():
@@ -144,7 +163,20 @@ class Floor(Area):
             # First, clear the screen to white. 
             screen.fill(WHITE)
             #The you can draw different shapes and lines or add text to your background stage.
+
+            # TODO : creer des méthodes draw qui prennent screen en paramètre pour dessiner des trucs dans chacuns des sous objets sur le même écran
+            
+            for element in self._assets:
+                element.draw(screen)
+            print(self._sub_areas)    
+            for area in self._sub_areas:
+                area.draw(screen)
+
+            # TODO : Draw the person in the floor
+
+            # draw the area corresponding to the floor. 
             pygame.draw.rect(screen, RED, [self.bounding_box['c1'].x,self.bounding_box['c1'].y,self.bounding_box['c2'].x,self.bounding_box['c2'].y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+            
             #pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5)
             #pygame.draw.ellipse(screen, BLACK, [20,20,250,100], 2)
         
@@ -152,7 +184,7 @@ class Floor(Area):
             # --- Go ahead and update the screen with what we've drawn.
             pygame.display.flip()
             
-            # --- Limit to 60 frames per second
+            # --- Limit to 1  frames per second
             
             clock.tick(1)
         
@@ -170,8 +202,6 @@ class Room(Area):
 #     def __init__(self,bounding_box):
 #         super().__init__(bounding_box)
 
-    def draw(self):
-        pass
 
 class Wall(Element):
     def __init__(self,coords):
@@ -251,11 +281,29 @@ class Person():
             else: 
                 raise NotInBuildingError(f"Impossible to go upstairs, {self.name} is not in a building")
 
+    def draw(self,screen):
+        print('Calling person.draw()...')
+        pygame.font.init() # you have to call this at the start, 
+                   # if you want to use this module.
+        myfont = pygame.font.SysFont('Comic Sans MS', 20) # check size of the police
+        textsurface = myfont.render(self.name, False, (0, 0, 0)) 
+        screen.blit(textsurface,(self.current_position.x,self.current_position.y))# display the name of the person
+        my_color = (250,0,0)
+        pygame.draw.circle(screen, my_color, (self.current_position.x,self.current_position.y),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
 
 
 if __name__=='__main__':
     C1 = Point(50,0) # point en haut à gauche du rectangle (décalage de C1.x vers la droite, décalage de C1.y vers le bas)
-    C2 = Point(100,100) # point en bas à droite du rectangle 
+    C2 = Point(300,300) # point en bas à droite du rectangle 
+    C3 = Point(75,75)
+    C4 = Point(75,0)
+    C5 = Point(150,150)
     bounding_box = {'c1':C1,'c2': C2}
+    bounding_box_room = {'c1':C4,'c2':C5}
     test_floor  = Floor(bounding_box,4)
+    person_test = Person(C3,'Personne_test',test_floor)
+    sub_area_test = Area(bounding_box_room)
+    test_floor.add_element(person_test)
+    test_floor.add_subarea(sub_area_test)
+    
     test_floor.draw()
