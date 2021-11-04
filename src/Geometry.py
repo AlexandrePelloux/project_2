@@ -68,6 +68,11 @@ class BoundingBox():
         assert isinstance(bounding_box,BoundingBox)
         return (self.c1.is_lower(bounding_box.c1) and bounding_box.c2.is_lower(self.c2))
 
+    def overlaps(self,bbox) -> bool:
+        assert isinstance(bbox,BoundingBox)
+        return (self.c1.x < bbox.c2.x and self.c2.x > bbox.c1.x and self.c2.y > bbox.c1.y and self.c1.y < bbox.c2.y)
+
+
     def expand(self,bounding_box) -> None:
         """Expand self to also contain `bounding_box`
 
@@ -95,6 +100,6 @@ class Line():
         return (self.p1.is_lower(line.p1) and line.p2.is_lower(self.p2))
 
     def overlaps(self,line)-> bool:
-        assert isinstance(line,line)
-        return (self.contains(line) or (self.p1.is_lower(line.p1) and self.p2.is_lower(line.p2))
+        assert isinstance(line,Line)
+        return (self.contains(line) or line.contains(self) or (self.p1.is_lower(line.p1) and self.p2.is_lower(line.p2))
                 or (line.p1.is_lower(self.p1) and line.p2.is_lower(self.p2)))

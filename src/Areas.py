@@ -19,7 +19,7 @@ class Area(Element):
 
     def add_subarea(self,area):
         assert isinstance(area,Area)
-        assert all(not subarea.overlaps(area) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
+        assert all(not subarea.bounding_box.overlaps(area.bounding_box) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
     
