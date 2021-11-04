@@ -21,7 +21,7 @@ class Element():
         Returns:
             Bool
         """
-        assert isinstance(elem,Element)
+        assert isinstance(elem,Element) 
         return self.bounding_box.contains(elem.bounding_box)
 
     def expand_bounding_box(self,element):
@@ -31,17 +31,6 @@ class Element():
 
     def draw(self,height,screen,ratio):
         self.bounding_box.draw(height,screen,ratio)
-    
-    # def draw(self,screen,is_area=False):
-    #     COLOR = {(0,156,65),(45,178,200),(158,20,46)}
-    #     my_color= COLOR.pop() # choose one color among a set of colors
-    #     if is_area:
-    #         print('Call to Element.draw() with is_area=True')
-    #         print('coordinates of C4: ',self.bounding_box.c1.x,self.bounding_box.c1.y)
-    #         pygame.draw.rect(screen, my_color, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
-
-    #     else:
-    #         pygame.draw.rect(screen, my_color, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y]) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
 
 
 class Wall(Line):
@@ -55,7 +44,6 @@ class Wall(Line):
         self._subelements.append(element)
 
     def draw(self,height,screen,ratio):
-        # super().draw(height,screen,ratio)
         for element in self._subelements:
             element.draw(height,screen,ratio)
 
@@ -70,5 +58,4 @@ class Window(Line):
         super().__init__(p1,p2)
 
     def draw(self,height,screen,ratio):
-        # print("drawing window")
         super().draw(height,screen,ratio,(0,0,250))

@@ -7,7 +7,7 @@ class Area(Element):
         super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
-        self._people = [] #list of persons inside the Area
+        self._people = [] # list of the person in current area
 
     def add_element(self,element):
         """Add an element to the list of elements contained in the Area (assets)
@@ -23,9 +23,9 @@ class Area(Element):
         assert all(not subarea.bounding_box.overlaps(area.bounding_box) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
+
     
     def draw(self,height,screen,ratio):
-        self.bounding_box.draw(height,screen,ratio)
         for asset in self._assets:
             asset.draw(height,screen,ratio)
         for subarea in self._sub_areas:
@@ -90,51 +90,30 @@ class Floor(Area):
         size_floor=(self.bounding_box.c2.x-self.bounding_box.c1.x,self.bounding_box.c2.y-self.bounding_box.c1.y)
         ratio=min(size[0]/size_floor[0],size[1]/size_floor[1])
         height=size[1]
-        print(ratio)
-        print(size_floor)
+
         # The loop will carry on until the user exit the game (e.g. clicks the close button).
         carryOn = True
-        
-        # The clock will be used to control how fast the screen updates
         clock = pygame.time.Clock()
-        
-        
-        # -------- Main Program Loop -----------my_area.add_subarea(room)
+        # -------- Main Program Loop -----------
         while carryOn:
             # --- Main event loop
             for event in pygame.event.get(): # User did something
                 if event.type == pygame.QUIT: # If user clicked close
                     carryOn = False # Flag that we are done so we exit this loop
         
-            # --- Game logic should go here
-        
-            # --- Drawing code should go here
             # First, clear the screen to white. 
             screen.fill(WHITE)
-            #The you can draw different shapes and lines or add text to your background stage.
 
-            # TODO : creer des méthodes draw qui prennent screen en paramètre pour dessiner des trucs dans chacuns des sous objets sur le même écran
-            
             for element in self._assets:
                 element.draw(height,screen,ratio)
-            # print(self._sub_areas)    
             for area in self._sub_areas:
                 area.draw(height,screen,ratio)
+            for person in self._people:
+                person.draw(height,screen,ratio)
 
-            # TODO : Draw the person in the floor
-
-            # draw the area corresponding to the floor. 
-            # pygame.draw.rect(screen, RED, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
-            
-            #pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5)
-            #pygame.draw.ellipse(screen, BLACK, [20,20,250,100], 2)
-        
-        
             # --- Go ahead and update the screen with what we've drawn.
             pygame.display.flip()
-            
             # --- Limit to 1  frames per second
-            
             clock.tick(1)
         
         #Once we have exited the main program loop we can stop the game engine:

@@ -2,6 +2,7 @@ from src.Geometry import Point,BoundingBox
 from src.Elements import Wall,Window,Door
 from src.Areas import Area,Room,Floor
 from src.Person import Person
+import src.Building as Building
 
 
 wall1=Wall(Point(1,1),Point(1,5))
@@ -34,8 +35,13 @@ area2.add_subarea(room3)
 test_floor = Floor(BoundingBox(Point(0,0),Point(6,6)), 4)
 test_floor.add_subarea(area)
 test_floor.add_subarea(area2)
-# person_test = Person(C3, 'Personne_test', test_floor)
-# sub_area_test = Area(bounding_box_room)
-# test_floor.add_element(person_test)
-# test_floor.add_subarea(sub_area_test)
+
+test_floor_2 = Floor(BoundingBox(Point(0,0),Point(6,6)), 3)
+
+test_building = Building.Building([test_floor,test_floor_2])
+person_test = Person('Personne test',test_building,Point(2,2), 4)
+
+
 test_floor.draw()
+
+#test_building.draw()
