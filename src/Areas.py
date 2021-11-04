@@ -1,4 +1,5 @@
 from src.Elements import Element,Wall
+from src.Geometry import BoundingBox, Point
 import pygame
 
 class Area(Element):
@@ -105,9 +106,24 @@ class Floor(Area):
         pygame.quit()
 
 class Room(Area):
-    def __init__(self,bounding_box,walls):
+    def __init__(self,walls):
         assert all(isinstance(wall,Wall) for wall in walls)
         assert len(walls)==4
+        c1=walls[0].p1  #bottom left corner
+        c2=walls[0].p2  #top right corner
+        for wall in walls:
+            if wall.p1.is_lower(c1):
+                c1=wall.p1
+            if c2.is_lower(wall.p2):
+                c2=wall.p2
+        
+        c3=Point(c1.x,c2.y) #top left corner
+        c4=Point(c2.x,c1.y) #bottom right corner
+        corners=[c1,c2,c3,c4]
+        bounding_box=BoundingBox(c1,c2)
+        #check all points defining the 4 walls are one of the 4 corners of the bounding box
+        #i.e. the walls define a closed rectangle
+        assert all(any(wall.p1.is_equal(c) for c in corners) for wall in walls)
+        assert all(any(wall.p2.is_equal(c) for c in corners) for wall in walls)
         super().__init__(bounding_box)
-        # assert all(self.contains(wall) for wall in walls)
         self.walls=walls
