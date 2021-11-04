@@ -3,6 +3,7 @@ from src.errors import FloorDontExist, NotInBuildingError
 from src.Geometry import Point
 import src.Areas as Area
 import pygame
+import src.Building as Building
 
 class Person():
     def __init__(self,position,name,floor,building=None):
@@ -15,7 +16,7 @@ class Person():
         assert isinstance(position,Point),'Position has to be of type "point_coordinates"'
         assert isinstance(floor,Area.Floor),'floor has to be of type "Floor"'
         assert type(name)==str , 'please use a string for the name'
-        #assert (isinstance(building,Building) or building==None), 'building is not type Building or none'
+        assert (isinstance(building,Building.Building) or building==None), 'building is not type Building or none'
         self.building=building
         self.current_position = position
         self.name = name
