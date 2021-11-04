@@ -1,5 +1,7 @@
-from Geometry import BoundingBox, Point, Line
+from src.Geometry import BoundingBox, Point, Line
 import pygame
+
+from src.Person import Person
 
 class Element():
     def __init__(self,bounding_box):
@@ -21,7 +23,7 @@ class Element():
         Returns:
             Bool
         """
-        assert isinstance(elem,Element)
+        assert isinstance(elem,Element) 
         return self.bounding_box.contains(elem.bounding_box)
 
     def expand_bounding_box(self,element):

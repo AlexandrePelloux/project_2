@@ -1,5 +1,6 @@
-from Elements import Element,Wall
-from Geometry import BoundingBox, Point
+from src.Elements import Element,Wall
+from src.Geometry import BoundingBox, Point
+import src.Person as Person
 import pygame
 
 class Area(Element):
@@ -7,6 +8,7 @@ class Area(Element):
         super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
+        self._people = [] # list of the person in current area
 
     def add_element(self,element):
         """Add an element to the list of elements contained in the Area (assets)
@@ -22,6 +24,11 @@ class Area(Element):
         assert all(not subarea.bounding_box.overlaps(area.bounding_box) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
+
+
+    def add_person(self,person):
+        assert isinstance(person,Person.Person)
+        self._people.append(person)
     
     def draw(self,height,screen,ratio):
         self.bounding_box.draw(height,screen,ratio)
@@ -88,6 +95,8 @@ class Floor(Area):
             # print(self._sub_areas)    
             for area in self._sub_areas:
                 area.draw(height,screen,ratio)
+            for person in self._people:
+                person.draw(height,screen,ratio)
 
             # TODO : Draw the person in the floor
 

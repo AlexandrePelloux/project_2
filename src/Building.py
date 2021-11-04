@@ -1,4 +1,4 @@
-from Areas import Floor
+from src.Areas import Floor
 
 class Building():
     def __init__(self,floors):

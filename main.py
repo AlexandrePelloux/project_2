@@ -26,8 +26,10 @@ print(area.bounding_box)
 
 test_floor = Floor(BoundingBox(Point(0,0),Point(6,6)), 4)
 test_floor.add_subarea(area)
-# person_test = Person(C3, 'Personne_test', test_floor)
+person_test = Person(Point(2,2), 'Personne_test', test_floor)
+test_floor.add_person(person_test)
 # sub_area_test = Area(bounding_box_room)
 # test_floor.add_element(person_test)
 # test_floor.add_subarea(sub_area_test)
+
 test_floor.draw()

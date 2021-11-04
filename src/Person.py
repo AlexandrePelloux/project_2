@@ -1,7 +1,7 @@
-from errors import FloorDontExist, NotInBuildingError
-from Geometry import Point
-from Building import Building
-from Areas import Floor
+#from src.Building import Building
+from src.errors import FloorDontExist, NotInBuildingError
+from src.Geometry import Point
+import src.Areas as Area
 import pygame
 
 class Person():
@@ -13,9 +13,9 @@ class Person():
             name ([str]): [name of the person]
         """
         assert isinstance(position,Point),'Position has to be of type "point_coordinates"'
-        assert isinstance(floor,Floor),'floor has to be of type "Floor"'
+        assert isinstance(floor,Area.Floor),'floor has to be of type "Floor"'
         assert type(name)==str , 'please use a string for the name'
-        assert (isinstance(building,Building) or building==None), 'building is not type Building or none'
+        #assert (isinstance(building,Building) or building==None), 'building is not type Building or none'
         self.building=building
         self.current_position = position
         self.name = name
@@ -52,15 +52,13 @@ class Person():
             else: 
                 raise NotInBuildingError(f"Impossible to go upstairs, {self.name} is not in a building")
 
-    # def draw(self,screen):
-    #     print('Calling person.draw()...')
-    #     pygame.font.init() # you have to call this at the start, 
-    #                # if you want to use this module.
-    #     myfont = pygame.font.SysFont('Comic Sans MS', 20) # check size of the police
-    #     textsurface = myfont.render(self.name, False, (0, 0, 0)) 
-    #     screen.blit(textsurface,(self.current_position.x,self.current_position.y))# display the name of the person
-    #     my_color = (250,0,0)
-    #     pygame.draw.circle(screen, my_color, (self.current_position.x,self.current_position.y),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
-
-    def draw(self,screen):
-        self.current_floor.draw()
+    def draw(self,height,screen,ratio):
+        # print('Calling person.draw()...')
+        pygame_position = self.current_position.to_pygame_coord(height,ratio)
+        pygame.font.init() # you have to call this at the start, 
+                    # if you want to use this module.
+        myfont = pygame.font.SysFont('Comic Sans MS', 20) # check size of the police
+        textsurface = myfont.render(self.name, False, (0, 0, 0)) 
+        screen.blit(textsurface,(pygame_position))# display the name of the person
+        my_color = (250,0,0)
+        pygame.draw.circle(screen, my_color, (pygame_position),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
