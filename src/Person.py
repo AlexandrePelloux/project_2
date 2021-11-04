@@ -44,13 +44,8 @@ class Person():
             """we have to consider the position x,y in the new floor"""
             if self.building:
                 floor_to_go_to = self.current_floor._floor_nb +delta[2]
-                list_of_floors = [floor for floor in self.building.contained_floors]
-                list_of_floor_nb = []
-                for floor in list_of_floors:
-                    list_of_floor_nb.append(floor._floor_nb)
-                if floor_to_go_to in list_of_floor_nb:
-                    index = list_of_floor_nb.index(floor_to_go_to)
-                    self.current_floor=list_of_floors[index]
+                if floor_to_go_to in self.building.contained_floors:
+                    self.current_floor=self.building.contained_floors[floor_to_go_to]
                 else:
                     raise FloorDontExist(f'impossible to go to floor number {floor_to_go_to}, this floor does not exist in building {self.building}')
                     
