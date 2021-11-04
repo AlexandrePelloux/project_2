@@ -31,7 +31,7 @@ def test_is_not_equal():
     p2=Point(1,3)
     assert not p1.is_equal(p2)
 
-def test_is__equal():
+def test_is_equal():
     p1=Point(1,2)
     p2=Point(1,2.)
     assert p1.is_equal(p2)

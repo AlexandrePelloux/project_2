@@ -88,12 +88,12 @@ class BoundingBox():
 class Line():
     def __init__(self,point1,point2) -> None:
         assert (isinstance(point1,Point) and isinstance(point2,Point))
-        assert (point1.x == point2.x or point1.y == point2.y), "the line is not axis-aligned"
+        assert (np.isclose(point1.x,point2.x) or np.isclose(point1.y,point2.y)), "the line is not axis-aligned"
         assert (not point1.is_equal(point2)), "the line is length 0"
         if point1.is_lower(point2):
             self.p1,self.p2=point1,point2
         else:
-            self.p1,self.p2=point1,point2
+            self.p1,self.p2=point2,point1
 
     def contains(self,line)-> bool:
         assert isinstance(line,Line)
@@ -101,5 +101,7 @@ class Line():
 
     def overlaps(self,line)-> bool:
         assert isinstance(line,Line)
-        return (self.contains(line) or line.contains(self) or (self.p1.is_lower(line.p1) and self.p2.is_lower(line.p2))
-                or (line.p1.is_lower(self.p1) and line.p2.is_lower(self.p2)))
+        if np.isclose(self.p1.x,line.p1.x):
+            return self.p2.y>line.p1.y and self.p1.y <line.p2.y
+        else:
+            return self.p1.x < line.p2.x and self.p2.x > line.p1.x
