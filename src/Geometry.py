@@ -50,7 +50,7 @@ class BoundingBox():
     """
     def __init__(self,point1,point2) -> None:
         assert (isinstance(point1,Point) and isinstance(point2,Point))
-        assert (not point1.is_equal(point2))
+        assert (not np.isclose(point1.x,point2.x) and not np.isclose(point1.y,point2.y)),"the bounding box is flat"
         if point1.is_lower(point2):
             self.c1,self.c2=point1,point2
         else:

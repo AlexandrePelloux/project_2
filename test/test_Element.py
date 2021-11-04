@@ -12,13 +12,6 @@ def test_coords_are_Point():
     with pytest.raises(AssertionError):
         my_element = Element(BoundingBox((5,4),Point(1,2)))
 
-def test_coord1_lower_coord2():
-    my_element = Element(BoundingBox(Point(2,3),Point(1,2)))
-    assert my_element.bounding_box.c1.x==1
-    assert my_element.bounding_box.c1.y==2
-    assert my_element.bounding_box.c2.x==2
-    assert my_element.bounding_box.c2.y==3
-
 def test_contains():
     elem1 = Element(BoundingBox(Point(1,2),Point(4,5)))
     elem2 = Element(BoundingBox(Point(2,3),Point(4,5)))
