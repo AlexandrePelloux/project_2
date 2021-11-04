@@ -22,12 +22,13 @@ class Area(Element):
         assert all(not subarea.bounding_box.overlaps(area.bounding_box) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
-    # TODO modify this
-    def draw(self,screen):
-        print('call to area.draw()')
-        print('coordinates of C4 before: ',self.bounding_box.c1.x,self.bounding_box.c1.y)
-
-        super().draw(screen,is_area=True)
+    
+    def draw(self,height,screen,ratio):
+        self.bounding_box.draw(height,screen,ratio)
+        for asset in self._assets:
+            asset.draw(height,screen,ratio)
+        for subarea in self._sub_areas:
+            subarea.draw(height,screen,ratio)
 
 
 
@@ -46,17 +47,19 @@ class Floor(Area):
         return self._floor_nb
 
     def draw(self):
-        # initialize game ingine:
         pygame.init()
         # define some colors 
-        BLACK = (0,0,0)
         WHITE = ( 255, 255, 255)
-        GREEN = ( 0, 255, 0)
-        RED = ( 255, 0, 0)
         # open a new window 
         size = (700,500)
         screen = pygame.display.set_mode(size)
-        pygame.display.set_caption(f'This is the representation of the floor number {self._floor_nb}')
+        pygame.display.set_caption(f'Floor number {self._floor_nb}')
+
+        size_floor=(self.bounding_box.c2.x-self.bounding_box.c1.x,self.bounding_box.c2.y-self.bounding_box.c1.y)
+        ratio=min(size[0]/size_floor[0],size[1]/size_floor[1])
+        height=size[1]
+        print(ratio)
+        print(size_floor)
         # The loop will carry on until the user exit the game (e.g. clicks the close button).
         carryOn = True
         
@@ -64,7 +67,7 @@ class Floor(Area):
         clock = pygame.time.Clock()
         
         
-        # -------- Main Program Loop -----------
+        # -------- Main Program Loop -----------my_area.add_subarea(room)
         while carryOn:
             # --- Main event loop
             for event in pygame.event.get(): # User did something
@@ -81,15 +84,15 @@ class Floor(Area):
             # TODO : creer des méthodes draw qui prennent screen en paramètre pour dessiner des trucs dans chacuns des sous objets sur le même écran
             
             for element in self._assets:
-                element.draw(screen)
-            print(self._sub_areas)    
+                element.draw(height,screen,ratio)
+            # print(self._sub_areas)    
             for area in self._sub_areas:
-                area.draw(screen)
+                area.draw(height,screen,ratio)
 
             # TODO : Draw the person in the floor
 
             # draw the area corresponding to the floor. 
-            pygame.draw.rect(screen, RED, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+            # pygame.draw.rect(screen, RED, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
             
             #pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5)
             #pygame.draw.ellipse(screen, BLACK, [20,20,250,100], 2)
@@ -127,7 +130,7 @@ class Room(Area):
         assert all(any(wall.p2.is_equal(c) for c in corners) for wall in walls)
         super().__init__(bounding_box)
         self.walls=walls
-    
-    # TODO completer ca
-    def draw(self,screen):
-        pass
+
+    def draw(self,height,screen,ratio):
+        for wall in self.walls:
+            wall.draw(height,screen,ratio)

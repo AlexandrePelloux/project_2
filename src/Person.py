@@ -51,13 +51,16 @@ class Person():
                     
             else: 
                 raise NotInBuildingError(f"Impossible to go upstairs, {self.name} is not in a building")
-# TODO 
+
+    # def draw(self,screen):
+    #     print('Calling person.draw()...')
+    #     pygame.font.init() # you have to call this at the start, 
+    #                # if you want to use this module.
+    #     myfont = pygame.font.SysFont('Comic Sans MS', 20) # check size of the police
+    #     textsurface = myfont.render(self.name, False, (0, 0, 0)) 
+    #     screen.blit(textsurface,(self.current_position.x,self.current_position.y))# display the name of the person
+    #     my_color = (250,0,0)
+    #     pygame.draw.circle(screen, my_color, (self.current_position.x,self.current_position.y),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+
     def draw(self,screen):
-        print('Calling person.draw()...')
-        pygame.font.init() # you have to call this at the start, 
-                   # if you want to use this module.
-        myfont = pygame.font.SysFont('Comic Sans MS', 20) # check size of the police
-        textsurface = myfont.render(self.name, False, (0, 0, 0)) 
-        screen.blit(textsurface,(self.current_position.x,self.current_position.y))# display the name of the person
-        my_color = (250,0,0)
-        pygame.draw.circle(screen, my_color, (self.current_position.x,self.current_position.y),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+        self.current_floor.draw()

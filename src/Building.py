@@ -13,3 +13,5 @@ class Building():
         assert not floor_nb in self.contained_floors, "that floor already exists"
         self.contained_floors[floor_nb]=floor
 
+    def draw(self):
+        pass
