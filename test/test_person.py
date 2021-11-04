@@ -107,24 +107,27 @@ def test_people_in_areas_sample_building():
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(2, 2), 4)
     person2 = Person("personne test 2", bat, Point(2, 3), 4)
-    assert all(set(a._people) == set([person,person2]) for a in [bat,floor, area, room])
-    assert all(a._people==[] for a in [area2,room2,room3])
+    assert all(set(a._people) == set([person, person2])
+               for a in [bat, floor, area, room])
+    assert all(a._people == [] for a in [area2, room2, room3])
 
 
 def test_visited_areas_move():
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test 1", bat, Point(2, 2), 4)
-    assert all(a._people==[person] for a in [bat,floor,area,room])
-    assert all(a._people==[] for a in [area2,room2,room3])
+    assert all(a._people == [person] for a in [bat, floor, area, room])
+    assert all(a._people == [] for a in [area2, room2, room3])
     person.move(Point(5, 3), 4)
-    assert all(a._people==[person] for a in [bat,floor,area,room2])
-    assert all(a._people==[] for a in [area2,room,room3])
+    assert all(a._people == [person] for a in [bat, floor, area, room2])
+    assert all(a._people == [] for a in [area2, room, room3])
     person.move(Point(7, 2), 4)
     assert set(person.current_visited_areas) == set([floor, area2, room3])
-    assert all(a._people==[person] for a in [bat,floor,area2,room3])
-    assert all(a._people==[] for a in [area,room,room2])
+    assert all(a._people == [person] for a in [bat, floor, area2, room3])
+    assert all(a._people == [] for a in [area, room, room2])
     person.exit_building()
-    assert all(a._people==[] for a in [bat,floor,area,area2,room,room2,room3])
+    assert all(a._people == []
+               for a in [bat, floor, area, area2, room, room2, room3])
+
 
 def test_2_clusters():
     wall1 = Wall(Point(1, 1), Point(1, 5))
@@ -132,18 +135,18 @@ def test_2_clusters():
     wall3 = Wall(Point(4, 1), Point(4, 5))
     wall4 = Wall(Point(1, 1), Point(4, 1))
     room = Room([wall1, wall2, wall3, wall4])
-    floor=Floor(BoundingBox(Point(1,1),Point(4,5)),0)
+    floor = Floor(BoundingBox(Point(1, 1), Point(4, 5)), 0)
     floor.add_subarea(room)
-    b=Building([floor])
-    p1=Person("p1",b,Point(1.2,1.3),0)
-    p2=Person("p2",b,Point(1.5,1.0),0)
-    p3=Person("p3",b,Point(1.4,1.1),0)
-    p4=Person("p4",b,Point(3.2,3.3),0)
-    p5=Person("p5",b,Point(2.5,3.0),0)
-    p6=Person("p6",b,Point(3.4,2.9),0)
-    centers=room.calc_k_popular_places(k=2)
-    assert len(centers)==2
-    assert math.floor(centers[0].x)==1
-    assert math.floor(centers[0].y)==1
-    assert math.floor(centers[1].x)==3
-    assert math.floor(centers[1].y)==3
+    b = Building([floor])
+    p1 = Person("p1", b, Point(1.2, 1.3), 0)
+    p2 = Person("p2", b, Point(1.5, 1.0), 0)
+    p3 = Person("p3", b, Point(1.4, 1.1), 0)
+    p4 = Person("p4", b, Point(3.2, 3.3), 0)
+    p5 = Person("p5", b, Point(2.5, 3.0), 0)
+    p6 = Person("p6", b, Point(3.4, 2.9), 0)
+    centers = room.calc_k_popular_places(k=2)
+    assert len(centers) == 2
+    assert math.floor(centers[0].x) == 1
+    assert math.floor(centers[0].y) == 1
+    assert math.floor(centers[1].x) == 3
+    assert math.floor(centers[1].y) == 3
