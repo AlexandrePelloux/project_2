@@ -1,4 +1,9 @@
-from src.classes import *
+from src.Geometry import Point
+from src.Areas import Floor
+from src.Person import Person
+from src.Building import Building
+from src.errors import FloorDontExist,NotInBuildingError
+
 import pytest
 
 def test_person_instaciation():

@@ -1,4 +1,4 @@
-from src.classes import *
+from src.Geometry import Point
 import pytest
 
 def test_instantiation():

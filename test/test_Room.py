@@ -1,4 +1,6 @@
-from src.classes import *
+from src.Geometry import Point
+from src.Areas import Room
+from src.Elements import Wall
 import pytest
 
 def test_instantiation():
