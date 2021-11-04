@@ -16,7 +16,7 @@ def test_is_lower():
     p2=Point(2,4.2)
     assert p1.is_lower(p2)
 
-def test_is_lower_equal():
+def test_is_lower_if_equal():
     p1=Point(1,2)
     p2=Point(1,2)
     assert p1.is_lower(p2)
@@ -25,3 +25,13 @@ def test_is_not_lower():
     p1=Point(1,2)
     p2=Point(0.9,5)
     assert not p1.is_lower(p2)
+
+def test_is_not_equal():
+    p1=Point(1,2)
+    p2=Point(1,3)
+    assert not p1.is_equal(p2)
+
+def test_is__equal():
+    p1=Point(1,2)
+    p2=Point(1,2.)
+    assert p1.is_equal(p2)

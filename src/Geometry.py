@@ -1,4 +1,5 @@
 import pygame 
+import numpy as np
 
 class Point():
     """ class representing the coordinates in 2D of a point.
@@ -30,3 +31,70 @@ class Point():
         """
         assert isinstance(point,Point)
         return(self.x <= point.x and self.y <= point.y)
+
+    def is_equal(self,point):
+        """Check if `self` and `point` are actually the same point
+
+        Args:
+            point (Point)
+
+        Returns:
+            bool
+        """
+        assert isinstance(point,Point)
+        return (np.isclose(self.x,point.x) and np.isclose(self.y,point.y))
+
+
+class BoundingBox():
+    """Represent a bounding box
+    """
+    def __init__(self,point1,point2) -> None:
+        assert (isinstance(point1,Point) and isinstance(point2,Point))
+        assert (not point1.is_equal(point2))
+        if point1.is_lower(point2):
+            self.c1,self.c2=point1,point2
+        else:
+            self.c1,self.c2=point2,point1
+
+    def contains(self,bounding_box) -> bool:
+        """Check if self contains `bounding_box`
+
+        Args:
+            bounding_box (BoundingBox)
+
+        Returns:
+            bool
+        """
+        assert isinstance(bounding_box,BoundingBox)
+        return (self.c1.is_lower(bounding_box.c1) and bounding_box.c2.is_lower(self.c2))
+
+    def expand(self,bounding_box) -> None:
+        """Expand self to also contain `bounding_box`
+
+        Args:
+            bounding_box (BoundingBox)
+        """
+        assert isinstance(bounding_box,BoundingBox)
+        self.c1.x=min(self.c1.x,bounding_box.c1.x)
+        self.c1.y=min(self.c1.y,bounding_box.c1.y)
+        self.c2.x=max(self.c2.x,bounding_box.c2.x)
+        self.c2.y=max(self.c2.y,bounding_box.c2.y)
+
+class Line():
+    def __init__(self,point1,point2) -> None:
+        assert (isinstance(point1,Point) and isinstance(point2,Point))
+        assert (point1.x == point2.x or point1.y == point2.y), "the line is not axis-aligned"
+        assert (not point1.is_equal(point2)), "the line is length 0"
+        if point1.is_lower(point2):
+            self.p1,self.p2=point1,point2
+        else:
+            self.p1,self.p2=point1,point2
+
+    def contains(self,line)-> bool:
+        assert isinstance(line,Line)
+        return (self.p1.is_lower(line.p1) and line.p2.is_lower(self.p2))
+
+    def overlaps(self,line)-> bool:
+        assert isinstance(line,line)
+        return (self.contains(line) or (self.p1.is_lower(line.p1) and self.p2.is_lower(line.p2))
+                or (line.p1.is_lower(self.p1) and line.p2.is_lower(self.p2)))

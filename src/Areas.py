@@ -6,7 +6,6 @@ class Area(Element):
         super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
-        # self._adjacent_areas = [] # list of 'connected areas
 
     def add_element(self,element):
         """Add an element to the list of elements contained in the Area (assets)
@@ -14,17 +13,18 @@ class Area(Element):
         Args:
             element (Element): element to add
         """
-        #assert self.contains(element) TODO : add a person
+        assert self.contains(element) #TODO : add a person
         self._assets.append(element)
 
     def add_subarea(self,area):
         assert isinstance(area,Area)
+        assert all(not subarea.overlaps(area) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
     
     def draw(self,screen):
         print('call to area.draw()')
-        print('coordinates of C4 before: ',self.bounding_box['c1'].x,self.bounding_box['c1'].y)
+        print('coordinates of C4 before: ',self.bounding_box.c1.x,self.bounding_box.c1.y)
 
         super().draw(screen,is_area=True)
 
@@ -88,7 +88,7 @@ class Floor(Area):
             # TODO : Draw the person in the floor
 
             # draw the area corresponding to the floor. 
-            pygame.draw.rect(screen, RED, [self.bounding_box['c1'].x,self.bounding_box['c1'].y,self.bounding_box['c2'].x,self.bounding_box['c2'].y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
+            pygame.draw.rect(screen, RED, [self.bounding_box.c1.x,self.bounding_box.c1.y,self.bounding_box.c2.x,self.bounding_box.c2.y],5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
             
             #pygame.draw.line(screen, GREEN, [0, 0], [100, 100], 5)
             #pygame.draw.ellipse(screen, BLACK, [20,20,250,100], 2)
@@ -109,4 +109,5 @@ class Room(Area):
         assert all(isinstance(wall,Wall) for wall in walls)
         assert len(walls)==4
         super().__init__(bounding_box)
-        assert all(self.contains(wall) for wall in walls)
+        # assert all(self.contains(wall) for wall in walls)
+        self.walls=walls
