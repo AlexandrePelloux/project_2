@@ -44,6 +44,16 @@ class Point():
         assert isinstance(point,Point)
         return (np.isclose(self.x,point.x) and np.isclose(self.y,point.y))
 
+    def to_pygame_coord(self,height,ratio):
+        return (self.x*ratio,height-self.y*ratio)
+
+    def __str__(self) -> str:
+        return str((self.x,self.y))
+    
+    def draw(self,height,screen,ratio,color=(255,0,0),thickness=3):
+        coords=self.to_pygame_coord(height,ratio)
+        pygame.draw.circle(screen,color, coords,thickness)
+
 
 class BoundingBox():
     """Represent a bounding box
@@ -85,6 +95,14 @@ class BoundingBox():
         self.c2.x=max(self.c2.x,bounding_box.c2.x)
         self.c2.y=max(self.c2.y,bounding_box.c2.y)
 
+    def __str__(self) -> str:
+        return "box "+str(self.c1)+" to "+str(self.c2)
+
+    def draw(self,height,screen,ratio,color=(150,150,150),thickness=2):
+        x1,y1=self.c1.to_pygame_coord(height,ratio)
+        x2,y2=self.c2.to_pygame_coord(height,ratio)
+        pygame.draw.rect(screen,color,[x1,y1,x2-x1,y2-y1],thickness)
+
 class Line():
     def __init__(self,point1,point2) -> None:
         assert (isinstance(point1,Point) and isinstance(point2,Point))
@@ -105,3 +123,11 @@ class Line():
             return self.p2.y>line.p1.y and self.p1.y <line.p2.y
         else:
             return self.p1.x < line.p2.x and self.p2.x > line.p1.x
+
+    def __str__(self) -> str:
+        return "line "+str(self.p1)+" to "+str(self.p2)
+
+    def draw(self,height,screen,ratio,color=(0,0,0),thickness=2):
+        x1,y1=self.p1.to_pygame_coord(height,ratio)
+        x2,y2=self.p2.to_pygame_coord(height,ratio)
+        pygame.draw.line(screen,color, [x1,y1], [x2,y2], thickness)
