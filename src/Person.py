@@ -7,12 +7,6 @@ import pygame
 
 class Person():
     def __init__(self, name, building=None, position=None, floor=None):
-        """[summary]
-
-        Args:
-            position ([Point]): [initial cordinates of the person]
-            name ([str]): [name of the person]
-        """
         assert isinstance(name, str), 'please use a string for the name'
         assert (isinstance(position, Point)
                 or position is None), 'Position has to be of type "point_coordinates" or None'
@@ -56,15 +50,6 @@ class Person():
             self.current_visited_areas.remove(area)
 
     def move(self, new_position, floor_number):
-        """[summary]
-
-        Args:
-            axis ([type]): [description]
-
-        Raises:
-            FloorDontExist: [description]
-            NotInBuildingError: [description]
-        """
         assert isinstance(new_position, Point)
         assert floor_number in self.building.contained_floors, "this floor does not exist in the current building"
         self.current_position = new_position

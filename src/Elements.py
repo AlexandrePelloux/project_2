@@ -4,11 +4,10 @@ import pygame
 
 class Element():
     def __init__(self, bounding_box):
-        """[summary]
+        """Abstract Element class
 
         Args:
-            bouding box of the element. There are two points : bottom left and top right (defining a rectangle)
-
+            bounding_box (BoundingBox): "rectangle" representing an element
         """
         assert isinstance(bounding_box, BoundingBox)
         self.bounding_box = bounding_box
@@ -26,6 +25,11 @@ class Element():
         return self.bounding_box.contains(elem.bounding_box)
 
     def expand_bounding_box(self, element):
+        """Expand the bounding box of self to also contain the bounding box of `element`
+
+        Args:
+            element (Element)
+        """
         assert isinstance(element, Element)
         self.bounding_box.expand(element.bounding_box)
 
@@ -35,10 +39,12 @@ class Element():
 
 class Wall(Line):
     def __init__(self, p1, p2):
+        """Represent a wall, which can contain other elements like doors and windows"""
         super().__init__(p1, p2)
         self._subelements = []
 
     def add_element(self, element):
+        """Add an element to the wall """
         assert self.contains(element), "this element is not in the wall"
         assert all(not el.overlaps(element)
                    for el in self._subelements), "this new element is overlapping an existing subelement"

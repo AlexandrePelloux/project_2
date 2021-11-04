@@ -6,12 +6,17 @@ import pygame
 
 class Area(Element):
     def __init__(self, coordinates) -> None:
+        """Represent an abstract area of the building
+
+        Args:
+            coordinates (BoundingBox): bounding box that represents the area
+        """
         super().__init__(coordinates)
         self._assets = []  # list of element contained in Area
         self._sub_areas = []  # list of areas contained in the current Area
         self._people = []  # list of the person in current area
 
-    def add_element(self, element):
+    def add_element(self, element)-> None:
         """Add an element to the list of elements contained in the Area (assets)
 
         Args:
@@ -20,37 +25,72 @@ class Area(Element):
         assert self.contains(element)
         self._assets.append(element)
 
-    def add_subarea(self, area):
+    def add_subarea(self, area)-> None:
+        """Add a sub area contained in the Area
+
+        Args:
+            area (Area): sub area to add
+        """
         assert isinstance(area, Area)
         assert all(not subarea.bounding_box.overlaps(area.bounding_box)
                    for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
 
-    def draw(self, height, screen, ratio):
+    def draw(self, height, screen, ratio)->None:
+        """Draw the area on `screen`
+        """
         for asset in self._assets:
             asset.draw(height, screen, ratio)
         for subarea in self._sub_areas:
             subarea.draw(height, screen, ratio)
 
     def add_person(self, person):
+        """Add a person to the list of people inside self
+
+        Args:
+            person (Person)
+        """
         if not person in self._people:
             self._people.append(person)
 
     def remove_person(self, person):
+        """Remove a person from the list of poeple inside self
+
+        Args:
+            person (Person)
+        """
         if person in self._people:
             self._people.remove(person)
 
     def remove_person_recursively(self, person):
+        """Remove a person from the list of people inside self and all sub areas
+
+        Args:
+            person (Person)
+        """
         if person in self._people:
             self._people.remove(person)
         for subarea in self._sub_areas:
             subarea.remove_person_recursively(person)
 
     def contains_person(self, person):
+        """Check if `person` is currently inside this area
+
+        Args:
+            person (Person)
+
+        Returns:
+            Bool
+        """
         return self.bounding_box.contains_point(person.current_position)
 
     def update_visited_areas(self, person):
+        """Update recursively the list of visited areas by a person (when they have moved)
+
+        Args:
+            person (Person)
+        """
         if len(self._sub_areas) > 0:
             inside_self = any(subarea.contains_person(person)
                               for subarea in self._sub_areas)
@@ -66,6 +106,15 @@ class Area(Element):
             subarea.update_visited_areas(person)
 
     def calc_k_popular_places(self, k=2):
+        """Compute the k most popular places inside this area based on the position of
+        all people currently inside it
+
+        Args:
+            k (int, optional): Number of clusters. Defaults to 2.
+
+        Returns:
+            List of k Points
+        """
         persons_coords = [person.current_position.to_array()
                           for person in self._people]
         assert k < len(
@@ -77,19 +126,22 @@ class Area(Element):
 
 class Floor(Area):
     def __init__(self, bounding_box, floor_nb):
-        """Constructor
+        """Represent a whole floor of the building
 
         Args:
-            floorNb (int): Floor number of the area
+            floorNb (int): Floor number 
         """
         assert isinstance(floor_nb, int)
         super().__init__(bounding_box)
         self._floor_nb = floor_nb
 
     def get_floor_nb(self):
+        """Get the floor number """
         return self._floor_nb
 
     def draw(self):
+        """Draw the whole floor recursively in a single window
+        """
         pygame.init()
         # define some colors
         WHITE = (255, 255, 255)
@@ -134,6 +186,11 @@ class Floor(Area):
 
 class Room(Area):
     def __init__(self, walls):
+        """Represent a room, made of 4 Walls
+
+        Args:
+            walls (List of 4 elements of class `Wall`)
+        """
         assert all(isinstance(wall, Wall) for wall in walls)
         assert len(walls) == 4
         c1 = walls[0].p1  # bottom left corner
@@ -156,6 +213,7 @@ class Room(Area):
         self.walls = walls
 
     def draw(self, height, screen, ratio):
+        """Draw the wall """
         self.bounding_box.draw(height, screen, ratio, color=(0, 0, 0))
         for wall in self.walls:
             wall.draw(height, screen, ratio)

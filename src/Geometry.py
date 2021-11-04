@@ -10,8 +10,8 @@ class Point():
         """Class of a point in 2D plane
 
         Args:
-            x ([float or int]): [x coordinate]
-            y ([float or int]): [y coordinate]
+            x (float or int): x coordinate
+            y (float or int): y coordinate
         """
 
         assert isinstance(
@@ -26,12 +26,10 @@ class Point():
         Returns true if it is indeed lower else it returns false (in all other cases)
 
         Args:
-            point_1 ([Point]): [description]
+            point_1 (Point)
 
-        Raises:
-            TypeError: [description]
         Returns: 
-            BOOL
+            Bool
         """
         assert isinstance(point, Point)
         return(self.x <= point.x and self.y <= point.y)
@@ -49,9 +47,20 @@ class Point():
         return (np.isclose(self.x, point.x) and np.isclose(self.y, point.y))
 
     def to_pygame_coord(self, height, ratio):
+        """Transform the coordinates of self by multiplying them by `ratio`
+        and flipping the origin from bottom left to top left (the one used by pygame)
+
+        Args:
+            height (float): height of the pygame window
+            ratio (float): scale
+
+        Returns:
+            tuple of numbers
+        """
         return (self.x*ratio, height-self.y*ratio)
 
     def to_array(self):
+        """Return the two coordinates of the Point in an array """
         return [self.x, self.y]
 
     def __str__(self) -> str:
@@ -63,8 +72,7 @@ class Point():
 
 
 class BoundingBox():
-    """Represent a bounding box
-    """
+    """Represent a rectangular, axis-aligned bounding box """
 
     def __init__(self, point1, point2) -> None:
         assert (isinstance(point1, Point) and isinstance(point2, Point))
@@ -88,10 +96,26 @@ class BoundingBox():
         return (self.c1.is_lower(bounding_box.c1) and bounding_box.c2.is_lower(self.c2))
 
     def contains_point(self, point) -> bool:
+        """Check if self contains `point`
+
+        Args:
+            point (Point)
+
+        Returns:
+            bool
+        """
         assert isinstance(point, Point)
         return (self.c1.is_lower(point) and point.is_lower(self.c2))
 
     def overlaps(self, bbox) -> bool:
+        """Check if self is overlapping another bounding box
+
+        Args:
+            bbox (BoundingBox)
+
+        Returns:
+            bool
+        """
         assert isinstance(bbox, BoundingBox)
         return (self.c1.x < bbox.c2.x and self.c2.x > bbox.c1.x and self.c2.y > bbox.c1.y and self.c1.y < bbox.c2.y)
 
@@ -117,6 +141,7 @@ class BoundingBox():
 
 
 class Line():
+    """Represent an axis-aligned line """
     def __init__(self, point1, point2) -> None:
         assert (isinstance(point1, Point) and isinstance(point2, Point))
         assert (np.isclose(point1.x, point2.x) or np.isclose(
@@ -128,10 +153,26 @@ class Line():
             self.p1, self.p2 = point2, point1
 
     def contains(self, line) -> bool:
+        """Check if `line` is included in self
+
+        Args:
+            line (Line)
+
+        Returns:
+            bool
+        """
         assert isinstance(line, Line)
         return (self.p1.is_lower(line.p1) and line.p2.is_lower(self.p2))
 
     def overlaps(self, line) -> bool:
+        """Check if self is overlapping `line`
+
+        Args:
+            line (Line)
+
+        Returns:
+            bool
+        """
         assert isinstance(line, Line)
         if np.isclose(self.p1.x, line.p1.x):
             return self.p2.y > line.p1.y and self.p1.y < line.p2.y
