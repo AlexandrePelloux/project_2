@@ -1,5 +1,5 @@
-from src.Elements import Element,Wall
-from src.Geometry import BoundingBox, Point
+from Elements import Element,Wall
+from Geometry import BoundingBox, Point
 import pygame
 
 class Area(Element):
@@ -22,7 +22,7 @@ class Area(Element):
         assert all(not subarea.bounding_box.overlaps(area.bounding_box) for subarea in self._sub_areas), "this area overlaps with an existing subarea"
         self.expand_bounding_box(area)
         self._sub_areas.append(area)
-    
+    # TODO modify this
     def draw(self,screen):
         print('call to area.draw()')
         print('coordinates of C4 before: ',self.bounding_box.c1.x,self.bounding_box.c1.y)
@@ -127,3 +127,7 @@ class Room(Area):
         assert all(any(wall.p2.is_equal(c) for c in corners) for wall in walls)
         super().__init__(bounding_box)
         self.walls=walls
+    
+    # TODO completer ca
+    def draw(self,screen):
+        pass

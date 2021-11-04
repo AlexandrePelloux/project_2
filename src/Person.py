@@ -1,7 +1,7 @@
-from src.errors import FloorDontExist, NotInBuildingError
-from src.Geometry import Point
-from src.Building import Building
-from src.Areas import Floor
+from errors import FloorDontExist, NotInBuildingError
+from Geometry import Point
+from Building import Building
+from Areas import Floor
 import pygame
 
 class Person():
@@ -51,7 +51,7 @@ class Person():
                     
             else: 
                 raise NotInBuildingError(f"Impossible to go upstairs, {self.name} is not in a building")
-
+# TODO 
     def draw(self,screen):
         print('Calling person.draw()...')
         pygame.font.init() # you have to call this at the start, 

@@ -1,4 +1,4 @@
-from src.Geometry import BoundingBox, Point, Line
+from Geometry import BoundingBox, Point, Line
 import pygame
 
 class Element():
@@ -28,7 +28,7 @@ class Element():
         assert isinstance(element,Element)
         self.bounding_box.expand(element.bounding_box)
         
-    
+    # TODO : check if this is correct
     def draw(self,screen,is_area=False):
         COLOR = {(0,156,65),(45,178,200),(158,20,46)}
         my_color= COLOR.pop() # choose one color among a set of colors
