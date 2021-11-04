@@ -78,6 +78,10 @@ class BoundingBox():
         assert isinstance(bounding_box,BoundingBox)
         return (self.c1.is_lower(bounding_box.c1) and bounding_box.c2.is_lower(self.c2))
 
+    def contains_point(self,point)->bool:
+        assert isinstance(point,Point)
+        return (self.c1.is_lower(point) and point.is_lower(self.c2))
+
     def overlaps(self,bbox) -> bool:
         assert isinstance(bbox,BoundingBox)
         return (self.c1.x < bbox.c2.x and self.c2.x > bbox.c1.x and self.c2.y > bbox.c1.y and self.c1.y < bbox.c2.y)
@@ -127,7 +131,7 @@ class Line():
     def __str__(self) -> str:
         return "line "+str(self.p1)+" to "+str(self.p2)
 
-    def draw(self,height,screen,ratio,color=(0,0,0),thickness=2):
+    def draw(self,height,screen,ratio,color=(0,0,0),thickness=5):
         x1,y1=self.p1.to_pygame_coord(height,ratio)
         x2,y2=self.p2.to_pygame_coord(height,ratio)
         pygame.draw.line(screen,color, [x1,y1], [x2,y2], thickness)

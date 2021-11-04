@@ -1,7 +1,6 @@
 
 from src.Geometry import BoundingBox, Point
 from src.Areas import Area,Floor
-from src.Person import Person
 import pytest
 
 def test_floor_instantiation():

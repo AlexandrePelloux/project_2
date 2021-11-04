@@ -1,63 +1,126 @@
-from src.Geometry import Point,BoundingBox
-from src.Areas import Floor
+from src.Geometry import Point, BoundingBox
 from src.Person import Person
 from src.Building import Building
-from src.errors import FloorDontExist,NotInBuildingError
+from src.errors import FloorDontExist, NotInBuildingError
+from src.Geometry import Point, BoundingBox
+from src.Elements import Wall, Window, Door
+from src.Areas import Area, Room, Floor
 
 import pytest
 
-def test_person_instaciation():
-    position = Point(1,2)
-    bounding_box= BoundingBox(Point(1,1),Point(2,5))
-    floor = Floor(bounding_box,0)
-    bat= Building([floor])
-    person = Person(position,'personne test',floor,bat)
-    assert isinstance(person,Person)
 
-def test_move_person_x_axis():
-    position = Point(1,2)
-    coordinates = BoundingBox(Point(1,1),Point(2,5))
-    floor = Floor(coordinates,0)
-    bat= Building([floor])
-    person = Person(position,'personne test',floor,bat)
-    person.move([1,0,0])
-    assert person.current_position.x==2
+def test_person_instantiation():
+    position = Point(1, 2)
+    bounding_box = BoundingBox(Point(1, 1), Point(2, 5))
+    floor = Floor(bounding_box, 0)
+    bat = Building([floor])
+    person = Person("personne test", bat, position, 0)
+    assert isinstance(person, Person)
+    assert person.current_visited_areas == [floor]
 
-def test_move_person_y_axis():
-    position = Point(1,2)
-    coordinates = BoundingBox(Point(1,1),Point(2,5))
-    floor = Floor(coordinates,0)
-    bat= Building([floor])
-    person = Person(position,'personne test',floor,bat)
-    person.move([0,1,0])
-    assert person.current_position.y==3
 
-def test_move_person_z_axis():
-    position = Point(1,2)
-    coordinates = BoundingBox(Point(1,1),Point(2,5))
-    floor0 = Floor(coordinates,0)
-    floor1 = Floor(coordinates,1)
-    bat= Building([floor0,floor1])
-    person = Person(position,'personne test',floor0,bat)
-    person.move([0,0,1])
-    assert person.current_floor._floor_nb == 1
+def test_current_floor_visited():
+    position = Point(1, 2)
+    bounding_box = BoundingBox(Point(1, 1), Point(2, 5))
+    floor = Floor(bounding_box, 0)
+    bat = Building([floor])
+    person = Person("personne test", bat, position, 0)
+    assert person.current_visited_areas == [floor]
 
-def test_move_person_z_axis_floor_dosent_exist():
-    with pytest.raises(FloorDontExist):
-        position = Point(1,2)
-        coordinates = BoundingBox(Point(1,1),Point(2,5))
-        floor0 = Floor(coordinates,0)
-        floor1 = Floor(coordinates,1)
-        bat= Building([floor0,floor1])
-        person = Person(position,'personne test',floor0,bat)
-        person.move([0,0,2])
 
-def test_move_person_z_axis_building_doesnt_exist():
-    with pytest.raises(NotInBuildingError):
-        position = Point(1,2)
-        coordinates = BoundingBox(Point(1,1),Point(2,5))
-        floor0 = Floor(coordinates,0)
-        floor1 = Floor(coordinates,1)
-        bat= Building([floor0,floor1])
-        person = Person(position,'personne test',floor0)
-        person.move([0,0,2])
+def test_floor_doesnt_exist():
+    position = Point(1, 2)
+    bounding_box = BoundingBox(Point(1, 1), Point(2, 5))
+    floor = Floor(bounding_box, 1)
+    bat = Building([floor])
+    with pytest.raises(AssertionError):
+        person = Person("personne test", bat, position, 0)
+
+
+def create_sample_building():
+    wall1 = Wall(Point(1, 1), Point(1, 5))
+    wall2 = Wall(Point(1, 5), Point(4, 5))
+    wall3 = Wall(Point(4, 1), Point(4, 5))
+    wall4 = Wall(Point(1, 1), Point(4, 1))
+    room = Room([wall1, wall2, wall3, wall4])
+    wall1.add_element(Window(Point(1, 2), Point(1, 3.5)))
+    wall2.add_element(Door(Point(1.5, 5), Point(2, 5)))
+    wall3.add_element(Door(Point(4, 2.5), Point(4, 3)))
+
+    wall5 = Wall(Point(4, 2), Point(4, 4))
+    wall6 = Wall(Point(4, 4), Point(6, 4))
+    wall7 = Wall(Point(6, 4), Point(6, 2))
+    wall8 = Wall(Point(6, 2), Point(4, 2))
+    room2 = Room([wall5, wall6, wall7, wall8])
+
+    wall9 = Wall(Point(6, 1), Point(8, 1))
+    wall10 = Wall(Point(8, 1), Point(8, 5))
+    wall11 = Wall(Point(8, 5), Point(6, 5))
+    wall12 = Wall(Point(6, 5), Point(6, 1))
+    room3 = Room([wall9, wall10, wall11, wall12])
+
+    area = Area(BoundingBox(Point(1, 1), Point(4, 5)))
+    area.add_subarea(room)
+    area.add_subarea(room2)
+    area2 = Area(BoundingBox(Point(6, 1), Point(8, 5)))
+    area2.add_subarea(room3)
+
+    floor = Floor(BoundingBox(Point(1, 1), Point(6, 6)), 4)
+    floor.add_subarea(area)
+    floor.add_subarea(area2)
+    bat = Building([floor])
+    return bat, floor, area, area2, room, room2, room3
+
+
+def test_visited_areas_outside():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test", bat, Point(0, 0), 4)
+    assert person.current_visited_areas == []
+
+
+def test_visited_areas_sample_building():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test", bat, Point(2, 2), 4)
+    assert set(person.current_visited_areas) == set([floor, area, room])
+
+
+def test_visited_areas_move():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test", bat, Point(2, 2), 4)
+    assert set(person.current_visited_areas) == set([floor, area, room])
+    person.move(Point(5, 3), 4)
+    assert set(person.current_visited_areas) == set([floor, area, room2])
+    person.move(Point(7, 2), 4)
+    assert set(person.current_visited_areas) == set([floor, area2, room3])
+
+
+def test_people_in_areas_outside():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test", bat, Point(0, 0), 4)
+    assert all(a._people == []
+               for a in [floor, area, area2, room, room2, room3])
+    assert bat._people == [person]
+
+
+def test_people_in_areas_sample_building():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test", bat, Point(2, 2), 4)
+    person2 = Person("personne test 2", bat, Point(2, 3), 4)
+    assert all(set(a._people) == set([person,person2]) for a in [bat,floor, area, room])
+    assert all(a._people==[] for a in [area2,room2,room3])
+
+
+def test_visited_areas_move():
+    bat, floor, area, area2, room, room2, room3 = create_sample_building()
+    person = Person("personne test 1", bat, Point(2, 2), 4)
+    assert all(a._people==[person] for a in [bat,floor,area,room])
+    assert all(a._people==[] for a in [area2,room2,room3])
+    person.move(Point(5, 3), 4)
+    assert all(a._people==[person] for a in [bat,floor,area,room2])
+    assert all(a._people==[] for a in [area2,room,room3])
+    person.move(Point(7, 2), 4)
+    assert set(person.current_visited_areas) == set([floor, area2, room3])
+    assert all(a._people==[person] for a in [bat,floor,area2,room3])
+    assert all(a._people==[] for a in [area,room,room2])
+    person.exit_building()
+    assert all(a._people==[] for a in [bat,floor,area,area2,room,room2,room3])

@@ -1,4 +1,4 @@
-from src.Geometry import BoundingBox, Point, Line
+from src.Geometry import BoundingBox, Line
 import pygame
 
 class Element():
@@ -55,7 +55,7 @@ class Wall(Line):
         self._subelements.append(element)
 
     def draw(self,height,screen,ratio):
-        super().draw(height,screen,ratio)
+        # super().draw(height,screen,ratio)
         for element in self._subelements:
             element.draw(height,screen,ratio)
 

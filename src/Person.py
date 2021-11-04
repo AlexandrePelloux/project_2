@@ -1,56 +1,79 @@
 from src.errors import FloorDontExist, NotInBuildingError
 from src.Geometry import Point
 from src.Building import Building
-from src.Areas import Floor
+from src.Areas import Area
 import pygame
 
 class Person():
-    def __init__(self,position,name,floor,building=None):
+    def __init__(self,name,building=None,position=None,floor=None):
         """[summary]
 
         Args:
             position ([Point]): [initial cordinates of the person]
             name ([str]): [name of the person]
         """
-        assert isinstance(position,Point),'Position has to be of type "point_coordinates"'
-        assert isinstance(floor,Floor),'floor has to be of type "Floor"'
-        assert type(name)==str , 'please use a string for the name'
-        assert (isinstance(building,Building) or building==None), 'building is not type Building or none'
-        self.building=building
-        self.current_position = position
+        assert isinstance(name,str),'please use a string for the name'
+        assert (isinstance(position,Point) or position is None),'Position has to be of type "point_coordinates" or None'
+        assert (isinstance(floor,int) or floor is None),'floor has to be of type "Int" or None'
+        assert (isinstance(building,Building) or building is None), 'building is not type Building or none'
+
         self.name = name
-        self.current_floor = floor
+        self.current_visited_areas=[]
+        self.building=None
+        self.current_floor=None
+        self.current_position=None
+
+        if not building is None:
+            self.enter_building(building)
+            if not floor is None and not position is None:
+                self.move(position,floor)
     
-    def move(self, delta):
+    def enter_building(self,building):
+        assert isinstance(building,Building)
+        assert self.building is None, "This person is already in a building"
+        self.building=building
+        self.building.add_person(self)
+
+    def exit_building(self):
+        assert not self.building is None, "This person is not in a building"
+        self.building.remove_person(self)
+        self.current_floor.remove_person_recursively(self)
+        self.building=None
+        self.current_floor=None
+
+    def add_visited_area(self,area):
+        assert isinstance(area,Area)
+        print("person:add visited area")
+        print(area.bounding_box)
+        if not area in self.current_visited_areas:
+            self.current_visited_areas.append(area)
+
+    def remove_visited_area(self,area):
+        assert isinstance(area,Area)
+        if area in self.current_visited_areas:
+            self.current_visited_areas.remove(area)
+    
+    def move(self,new_position,floor_number):
 
         """[summary]
 
         Args:
             axis ([type]): [description]
-            delta ([list]): [x,y,z]
 
         Raises:
             FloorDontExist: [description]
             NotInBuildingError: [description]
         """
-        if delta[0]: #axe x
-            """need to check if the deplacement is legal"""
-            self.current_position.x+=delta[0]
-        if delta[1]: #axe y
-            """need to check if the deplacement is legal"""
+        assert isinstance(new_position,Point)
+        assert floor_number in self.building.contained_floors, "this floor does not exist in the current building"
+        self.current_position=new_position
+        if self.current_floor is None or self.current_floor.get_floor_nb()!=floor_number:
+            if not self.current_floor is None:
+                self.current_floor.remove_person_recursively(self)
+            self.current_floor=self.building.contained_floors[floor_number]
+        self.current_floor.update_visited_areas(self)
 
-            self.current_position.y+=delta[1]
-        if delta[2]: #axe z
-            """we have to consider the position x,y in the new floor"""
-            if self.building:
-                floor_to_go_to = self.current_floor._floor_nb +delta[2]
-                if floor_to_go_to in self.building.contained_floors:
-                    self.current_floor=self.building.contained_floors[floor_to_go_to]
-                else:
-                    raise FloorDontExist(f'impossible to go to floor number {floor_to_go_to}, this floor does not exist in building {self.building}')
-                    
-            else: 
-                raise NotInBuildingError(f"Impossible to go upstairs, {self.name} is not in a building")
+
 
     # def draw(self,screen):
     #     print('Calling person.draw()...')
@@ -63,4 +86,4 @@ class Person():
     #     pygame.draw.circle(screen, my_color, (self.current_position.x,self.current_position.y),5) # rectangle coordinates are represented by [c1.x,c1.y,c2.x,c2.y]
 
     def draw(self,screen):
-        self.current_floor.draw()
+        self.current_position.draw()

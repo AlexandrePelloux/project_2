@@ -7,6 +7,7 @@ class Area(Element):
         super().__init__(coordinates)
         self._assets = [] # list of element contained in Area
         self._sub_areas = [] # list of areas contained in the current Area
+        self._people = [] #list of persons inside the Area
 
     def add_element(self,element):
         """Add an element to the list of elements contained in the Area (assets)
@@ -14,7 +15,7 @@ class Area(Element):
         Args:
             element (Element): element to add
         """
-        assert self.contains(element) #TODO : add a person
+        assert self.contains(element) 
         self._assets.append(element)
 
     def add_subarea(self,area):
@@ -29,6 +30,37 @@ class Area(Element):
             asset.draw(height,screen,ratio)
         for subarea in self._sub_areas:
             subarea.draw(height,screen,ratio)
+        
+    def add_person(self,person):
+        if not person in self._people:
+            self._people.append(person)
+
+    def remove_person(self,person):
+        if person in self._people:
+            self._people.remove(person)
+
+    def remove_person_recursively(self,person):
+        if person in self._people:
+            self._people.remove(person)
+        for subarea in self._sub_areas:
+            subarea.remove_person_recursively(person)
+
+    def contains_person(self,person):
+        return self.bounding_box.contains_point(person.current_position)
+
+    def update_visited_areas(self,person):
+        if len(self._sub_areas)>0:
+            inside_self=any(subarea.contains_person(person) for subarea in self._sub_areas)
+        else:
+            inside_self=self.contains_person(person)
+        if inside_self:
+            self.add_person(person)
+            person.add_visited_area(self)
+        else:
+            self.remove_person(person)
+            person.remove_visited_area(self)
+        for subarea in self._sub_areas:
+            subarea.update_visited_areas(person)
 
 
 
@@ -132,5 +164,6 @@ class Room(Area):
         self.walls=walls
 
     def draw(self,height,screen,ratio):
+        self.bounding_box.draw(height,screen,ratio,color=(0,0,0))
         for wall in self.walls:
             wall.draw(height,screen,ratio)
