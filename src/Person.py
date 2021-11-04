@@ -43,8 +43,6 @@ class Person():
 
     def add_visited_area(self,area):
         assert isinstance(area,Area)
-        print("person:add visited area")
-        print(area.bounding_box)
         if not area in self.current_visited_areas:
             self.current_visited_areas.append(area)
 

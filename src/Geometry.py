@@ -47,6 +47,9 @@ class Point():
     def to_pygame_coord(self,height,ratio):
         return (self.x*ratio,height-self.y*ratio)
 
+    def to_array(self):
+        return [self.x,self.y]
+
     def __str__(self) -> str:
         return str((self.x,self.y))
     

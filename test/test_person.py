@@ -7,6 +7,7 @@ from src.Elements import Wall, Window, Door
 from src.Areas import Area, Room, Floor
 
 import pytest
+import math
 
 
 def test_person_instantiation():
@@ -124,3 +125,25 @@ def test_visited_areas_move():
     assert all(a._people==[] for a in [area,room,room2])
     person.exit_building()
     assert all(a._people==[] for a in [bat,floor,area,area2,room,room2,room3])
+
+def test_2_clusters():
+    wall1 = Wall(Point(1, 1), Point(1, 5))
+    wall2 = Wall(Point(1, 5), Point(4, 5))
+    wall3 = Wall(Point(4, 1), Point(4, 5))
+    wall4 = Wall(Point(1, 1), Point(4, 1))
+    room = Room([wall1, wall2, wall3, wall4])
+    floor=Floor(BoundingBox(Point(1,1),Point(4,5)),0)
+    floor.add_subarea(room)
+    b=Building([floor])
+    p1=Person("p1",b,Point(1.2,1.3),0)
+    p2=Person("p2",b,Point(1.5,1.0),0)
+    p3=Person("p3",b,Point(1.4,1.1),0)
+    p4=Person("p4",b,Point(3.2,3.3),0)
+    p5=Person("p5",b,Point(2.5,3.0),0)
+    p6=Person("p6",b,Point(3.4,2.9),0)
+    centers=room.calc_k_popular_places(k=2)
+    assert len(centers)==2
+    assert math.floor(centers[0].x)==1
+    assert math.floor(centers[0].y)==1
+    assert math.floor(centers[1].x)==3
+    assert math.floor(centers[1].y)==3
