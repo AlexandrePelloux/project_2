@@ -6,6 +6,8 @@ import pygame
 
 
 class Person():
+    """Represent a perosn visiting the building
+    """
     def __init__(self, name, building=None, position=None, floor=None):
         assert isinstance(name, str), 'please use a string for the name'
         assert (isinstance(position, Point)
@@ -27,12 +29,19 @@ class Person():
                 self.move(position, floor)
 
     def enter_building(self, building):
+        """Attach the person to a specific building
+
+        Args:
+            building (Building)
+        """
         assert isinstance(building, Building)
         assert self.building is None, "This person is already in a building"
         self.building = building
         self.building.add_person(self)
 
     def exit_building(self):
+        """Remove the building attached to the person
+        """
         assert not self.building is None, "This person is not in a building"
         self.building.remove_person(self)
         self.current_floor.remove_person_recursively(self)
@@ -40,16 +49,32 @@ class Person():
         self.current_floor = None
 
     def add_visited_area(self, area):
+        """Add an area to the list of currently visited areas (if not already added)
+
+        Args:
+            area (Area)
+        """
         assert isinstance(area, Area)
         if not area in self.current_visited_areas:
             self.current_visited_areas.append(area)
 
     def remove_visited_area(self, area):
+        """Remove an area from the list of currently visited area (if in the list)
+
+        Args:
+            area (Area)
+        """
         assert isinstance(area, Area)
         if area in self.current_visited_areas:
             self.current_visited_areas.remove(area)
 
     def move(self, new_position, floor_number):
+        """Simulate a movement, given the new position and the new floor number
+
+        Args:
+            new_position ([type]): [description]
+            floor_number ([type]): [description]
+        """
         assert isinstance(new_position, Point)
         assert floor_number in self.building.contained_floors, "this floor does not exist in the current building"
         self.current_position = new_position
