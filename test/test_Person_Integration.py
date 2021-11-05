@@ -1,7 +1,6 @@
 from src.Geometry import Point, BoundingBox
 from src.Person import Person
 from src.Building import Building
-from src.errors import FloorDontExist, NotInBuildingError
 from src.Geometry import Point, BoundingBox
 from src.Elements import Wall, Window, Door
 from src.Areas import Area, Room, Floor
