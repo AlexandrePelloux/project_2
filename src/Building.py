@@ -2,7 +2,7 @@ import src.Areas as Area
 
 
 class Building():
-    def __init__(self, floors):
+    def __init__(self, floors=[]):
         """Represent a whole building
 
         Args:
@@ -31,7 +31,8 @@ class Building():
         Args:
             person (Person)
         """
-        self._people.append(person)
+        if not person in self._people:
+            self._people.append(person)
 
     def remove_person(self, person):
         """Remove a person from a building, when they left for example
@@ -39,7 +40,8 @@ class Building():
         Args:
             person (Person)
         """
-        self._people.remove(person)
+        if person in self._people:
+            self._people.remove(person)
 
     def draw(self):
         for floor in self.contained_floors.values():

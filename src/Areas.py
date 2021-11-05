@@ -119,7 +119,7 @@ class Area(Element):
                           for person in self._people]
         assert k < len(
             self._people), "There are not enough people to find k clusters"
-        kmeans = KMeans(n_clusters=k).fit(persons_coords)
+        kmeans = KMeans(n_clusters=k,random_state=0).fit(persons_coords)
         centers = [Point(c[0], c[1]) for c in kmeans.cluster_centers_]
         return centers
 

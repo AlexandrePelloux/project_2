@@ -146,7 +146,7 @@ def test_2_clusters():
     p6 = Person("p6", b, Point(3.4, 2.9), 0)
     centers = room.calc_k_popular_places(k=2)
     assert len(centers) == 2
-    assert math.floor(centers[0].x) == 1
-    assert math.floor(centers[0].y) == 1
-    assert math.floor(centers[1].x) == 3
-    assert math.floor(centers[1].y) == 3
+    assert math.floor(centers[0].x) == 3
+    assert math.floor(centers[0].y) == 3
+    assert math.floor(centers[1].x) == 1
+    assert math.floor(centers[1].y) == 1

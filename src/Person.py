@@ -1,4 +1,3 @@
-from src.errors import FloorDontExist, NotInBuildingError
 from src.Geometry import Point
 from src.Building import Building
 from src.Areas import Area
