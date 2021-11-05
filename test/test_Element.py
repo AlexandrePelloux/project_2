@@ -11,17 +11,20 @@ def test_instantiation():
 
 
 def test_coords_are_Point():
+    """Check we get an error if one of the corners is not a Point """
     with pytest.raises(AssertionError):
         my_element = Element(BoundingBox((5, 4), Point(1, 2)))
 
 
 def test_contains():
+    """Test the contains method, when one bounding box contains another """
     elem1 = Element(BoundingBox(Point(1, 2), Point(4, 5)))
     elem2 = Element(BoundingBox(Point(2, 3), Point(4, 5)))
     assert elem1.contains(elem2)
 
 
 def test_not_contains():
+    """Test the contains method, when one bounding box is partially overlapping another" """
     elem1 = Element(BoundingBox(Point(1, 2), Point(4, 5)))
     elem2 = Element(BoundingBox(Point(2, 3), Point(3, 6)))
     assert not elem1.contains(elem2)

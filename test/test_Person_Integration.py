@@ -16,10 +16,10 @@ def test_person_instantiation():
     bat = Building([floor])
     person = Person("personne test", bat, position, 0)
     assert isinstance(person, Person)
-    assert person.current_visited_areas == [floor]
 
 
 def test_current_floor_visited():
+    """Test the list of currently visited areas is properly updated"""
     position = Point(1, 2)
     bounding_box = BoundingBox(Point(1, 1), Point(2, 5))
     floor = Floor(bounding_box, 0)
@@ -29,6 +29,7 @@ def test_current_floor_visited():
 
 
 def test_floor_doesnt_exist():
+    """Test we get an error if the person is located at a floor that doesn't exist"""
     position = Point(1, 2)
     bounding_box = BoundingBox(Point(1, 1), Point(2, 5))
     floor = Floor(bounding_box, 1)
@@ -38,6 +39,7 @@ def test_floor_doesnt_exist():
 
 
 def create_sample_building():
+    """Create a building for testing purposes, containing a floor with several rooms and areas """
     wall1 = Wall(Point(1, 1), Point(1, 5))
     wall2 = Wall(Point(1, 5), Point(4, 5))
     wall3 = Wall(Point(4, 1), Point(4, 5))
@@ -73,18 +75,21 @@ def create_sample_building():
 
 
 def test_visited_areas_outside():
+    """Test the visited areas are empty if the person is outside any area """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(0, 0), 4)
     assert person.current_visited_areas == []
 
 
 def test_visited_areas_sample_building():
+    """Test the visited areas are correct if the person is in one of the rooms """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(2, 2), 4)
     assert set(person.current_visited_areas) == set([floor, area, room])
 
 
 def test_visited_areas_move():
+    """Test the visited areas are updated properly as a person moves """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(2, 2), 4)
     assert set(person.current_visited_areas) == set([floor, area, room])
@@ -95,6 +100,7 @@ def test_visited_areas_move():
 
 
 def test_people_in_areas_outside():
+    """Test the list of people inside the areas of the building are correct if the person is outside any area """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(0, 0), 4)
     assert all(a._people == []
@@ -103,6 +109,7 @@ def test_people_in_areas_outside():
 
 
 def test_people_in_areas_sample_building():
+    """Test the list of people inside the areas of the building are correct with 2 persons inside the same room """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test", bat, Point(2, 2), 4)
     person2 = Person("personne test 2", bat, Point(2, 3), 4)
@@ -112,6 +119,7 @@ def test_people_in_areas_sample_building():
 
 
 def test_visited_areas_move():
+    """Test the list of people inside the areas of the building are updated correctly as a person moves """
     bat, floor, area, area2, room, room2, room3 = create_sample_building()
     person = Person("personne test 1", bat, Point(2, 2), 4)
     assert all(a._people == [person] for a in [bat, floor, area, room])
@@ -129,6 +137,7 @@ def test_visited_areas_move():
 
 
 def test_2_clusters():
+    """Test that the 2 most popular locations in an area are computed correctly on a simple example """
     wall1 = Wall(Point(1, 1), Point(1, 5))
     wall2 = Wall(Point(1, 5), Point(4, 5))
     wall3 = Wall(Point(4, 1), Point(4, 5))

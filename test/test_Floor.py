@@ -12,5 +12,6 @@ def test_floor_instantiation():
 
 
 def test_floor_nb_is_int():
+    """Check we get an error if the provided floor number is not an int """
     with pytest.raises(AssertionError) as exception_info:
         f = Floor(BoundingBox(Point(3, 4), Point(5, 6)), 5.4)

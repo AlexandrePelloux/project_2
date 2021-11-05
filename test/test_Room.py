@@ -17,6 +17,7 @@ def test_instantiation():
 
 
 def test_walls_not_rectangle():
+    """Check we get an error if the walls don't defined a rectangle """
     with pytest.raises(AssertionError):
         wall1 = Wall(Point(1, 1), Point(1, 6))
         wall2 = Wall(Point(1, 5), Point(4, 5))
@@ -27,6 +28,7 @@ def test_walls_not_rectangle():
 
 
 def test_walls_not_closed():
+    """Check we get an error if the rectangle defined by the walls is not closed """
     with pytest.raises(AssertionError):
         wall1 = Wall(Point(1, 1), Point(1, 4))
         wall2 = Wall(Point(1, 5), Point(4, 5))

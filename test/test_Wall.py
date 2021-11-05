@@ -10,11 +10,13 @@ def test_instantiation():
 
 
 def test_not_axis_aligned():
+    """Check we get an error if the wall is not axis-aligned """
     with pytest.raises(AssertionError):
         w = Wall(Point(4, 5), Point(6, 6))
 
 
 def test_add_window():
+    """Check we can add a window to a wall """
     w = Wall(Point(8, 3), Point(2, 3))
     window = Window(Point(2.5, 3), Point(3.5, 3))
     w.add_element(window)
@@ -22,6 +24,7 @@ def test_add_window():
 
 
 def test_add_door():
+    """Check we can add a door to a wall """
     w = Wall(Point(8, 3), Point(2, 3))
     door = Door(Point(2.5, 3), Point(3.5, 3))
     w.add_element(door)
@@ -29,6 +32,7 @@ def test_add_door():
 
 
 def test_add_overlapping_elements():
+    """Check a wall cannot contain two overlapping elements (window/door...) """
     w = Wall(Point(8, 3), Point(2, 3))
     window = Window(Point(2.5, 3), Point(3.5, 3))
     door = Door(Point(3, 3), Point(4, 3))

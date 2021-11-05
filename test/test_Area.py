@@ -10,6 +10,7 @@ def test_instantiation():
 
 
 def test_add_subarea():
+    """Test expanding a first area by adding a second one inside it """
     my_area = Area(BoundingBox(Point(1, 2), Point(6, 10)))
     second_area = Area(BoundingBox(Point(6, 6), Point(8, 8)))
     my_area.add_subarea(second_area)
@@ -18,6 +19,7 @@ def test_add_subarea():
 
 
 def test_add_subarea_overlaps():
+    """Check two subareas cannot overlap """
     my_area = Area(BoundingBox(Point(0, 0), Point(10, 10)))
     first_area = Area(BoundingBox(Point(1, 2), Point(6, 10)))
     second_area = Area(BoundingBox(Point(5, 5), Point(8, 8)))
