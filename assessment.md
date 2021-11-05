@@ -3,37 +3,37 @@ Please copy the content of this form to your own repository and tick ([X]) the b
 
 # Git
 
-[ ] I use git to store (only) the source code of my project.
+[X] I use git to store (only) the source code of my project.
 
-[ ] I configured the git `.ignore` file.
+[X] I configured the git `.ignore` file.
 
-[ ] I made a commit per atomic change to the file of the project. Example:
+[X] I made a commit per atomic change to the file of the project. Example: https://github.com/AlexandrePelloux/project_2/commit/b4077511a8795f7d45f8a717ba188d3cd07733ce
 
-[ ] I use meaningful commit message by following guidelines. Example:
+[X] I use meaningful commit message by following guidelines. Example: https://github.com/AlexandrePelloux/project_2/commit/62fe480d2c9c7c1882e4dda93d0b436bf73c670f
 
-[ ] Both me and my pair are contributing to a shared repository.
+[X] Both me and my pair are contributing to a shared repository.
 
 
 # Python programming
 
-[ ] I use object-oriented Python to develop my project. 
+[X] I use object-oriented Python to develop my project. 
 
-[ ] I document the code of my project.
+[X] I document the code of my project.
 
-[ ] I document the project itself.
+[X] I document the project itself.
 
 
 # Test-driven development
 
-[ ] I include some tests with my project. 
+[X] I include some tests with my project. 
 
-[ ] My tests cover all the source code developed.
+[X] My tests cover all the source code developed.
 
-[ ] I apply principles of TDD to develop my code.
+[X] I apply principles of TDD to develop my code.
 
 
 # Software architecture
 
-[ ] I follow the clean code rules. 
+[X] I follow the clean code rules. 
 
-[ ] I use and document some design patterns in my project. Examples
+[X] I use and document some design patterns in my project. Example: Composite pattern
